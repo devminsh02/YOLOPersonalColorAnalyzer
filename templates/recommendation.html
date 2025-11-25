@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h2>{{ color }}에 맞는 추천 화장품</h2>
+
+    {% if products %}
+        <h3>추천 제품 목록</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>제품 이름</th>
+                    <th>색상 이름</th>
+                    <th>HSV 값</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                         <td><a href="{{ product['product_url'] }}" target="_blank">{{ product['product_name'] }}</a></td>
+                        <td>{{ product['color_name'] }}</td>
+                        <td>{{ product['HSV'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if show_more_button %}
+        <a href="{{ url_for('more_recommendations', color=color) }}">
+            <button>더 많은 추천 제품 보러가기</button>
+        </a>
+        {% endif %}
+    {% else %}
+        <p>추천할 제품이 없습니다.</p>
+    {% endif %}
+
+    <a href="/diagnose"><button>진단 페이지로 돌아가기</button></a>
+{% endblock %}

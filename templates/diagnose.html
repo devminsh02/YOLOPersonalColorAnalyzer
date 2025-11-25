@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>진단 페이지 -> 움직이지 마시오.</h2>
+    <div id="video-container">
+
+        <video id="video-feed" width="640" height="480" autoplay style="transform: scaleX(-1);"></video>
+        <div id="loading-message" style="display: none; text-align: center; font-size: 24px; line-height: 480px;">퍼스널 컬러 진단 중..</div>
+
+    </div>
+
+    <a href="/"><button>메인 페이지로</button></a>
+
+    <button id="run-yolo-btn">YOLO 실행</button>
+    <!-- YOLO 모델 실행 버튼 -->
+
+    <button id="toggle-webcam-btn">카메라 끄기</button>
+    <!-- 카메라 ON/OFF 버튼 -->
+
+    <canvas id="canvas" style="display: none;"></canvas>
+
+    <script>
+        // 웹캠 활성화 확인
+        let webcamActive = true;
+
+        // 웹캠 시작 함수
+        function startWebcam() {
+            const videoElement = document.getElementById('video-feed');        // 비디오 가져오기
+            const loadingMessage = document.getElementById('loading-message'); // 로딩 메시지 가져오기
+            loadingMessage.style.display = 'none';                             // 로딩 메시지 숨기기
+            videoElement.style.display = 'block';                              // 비디오 표시
+            // 웹캠에서 비디오 스트림 가져오기
+            navigator.mediaDevices.getUserMedia({ video: true })   // 사용자의 카메라 접근 권한을 요청
+                .then(function(stream) {
+                    videoElement.srcObject = stream;      // 비디오에 스트림을 설정하여 웹캠 피드 표시
+                })
+                .catch(function(err) {
+                    console.log("웹캠을 시작할 수 없습니다: ", err);   // 에러 발생 시 메시지 콘솔에 출력
+                });
+        }
+
+        // 웹캠 중지 함수
+        function stopWebcam() {
+            const videoElement = document.getElementById('video-feed');        // 비디오 가져오기
+            const loadingMessage = document.getElementById('loading-message'); // 로딩 메시지 가져오기
+            const stream = videoElement.srcObject;            // 현재 비디오 피드에서 사용 중인 스트림 가져오기
+            if (stream) {
+                const tracks = stream.getTracks();            // 스트림에 있는 트랙(비디오, 오디오 등)을 가져오기
+                tracks.forEach(track => track.stop());        // 각 트랙 중지
+                videoElement.srcObject = null;  // 비디오 피드에서 스트림을 제거하여 더 이상 웹캠이 표시되지 않게 함
+            }
+            videoElement.style.display = 'none';        // 비디오 숨기기
+            loadingMessage.style.display = 'block';     // 로딩 메시지 표시
+        }
+
+        // 카메라 ON/OFF 버튼 동작 정의
+        document.getElementById('toggle-webcam-btn').onclick = function() {
+            if (webcamActive) {
+                stopWebcam();    // 웹캠이 활성화된 경우 웹캠 중지
+                this.textContent = '카메라 켜기';  // 버튼 텍스트 '카메라 켜기'로 변경
+            } else {
+                startWebcam();   // 웹캠이 중지된 경우 웹캠 다시 시작
+                this.textContent = '카메라 끄기';  // 버튼 텍스트 '카메라 끄기'로 변경
+            }
+            webcamActive = !webcamActive;   // 현재 웹캠 상태를 반전시킴 (켜져 있으면 끄고, 꺼져 있으면 켜는 동작)
+        };
+
+        // 페이지가 로드될 때 웹캠 자동 시작
+        window.onload = function() {
+            startWebcam();
+        };
+
+        // jQuery를 사용하여 YOLO 실행 버튼 동작 정의
+        $(document).ready(function() {
+            $('#run-yolo-btn').click(function() {
+                stopWebcam();  // YOLO 실행할 때 웹캠 중지
+                $.post('/run_yolo', function(response) {
+                    // YOLO 실행 후 서버로부터 응답을 받으면 결과 페이지로 리디렉션
+                    window.location.href = "/result";
+                });
+            });
+        });
+    </script>
+{% endblock %}

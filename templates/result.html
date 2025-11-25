@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2 style="color: #1E90FF;">퍼스널 컬러 결과</h2>
+
+    <!-- 결과 메시지 -->
+    <p style="font-size: 24px; color: black; text-align: center;">
+        당신의 Personal Color는
+        <span style="font-weight: bold; color: black;">
+            {{ personal_color }}
+        </span>
+        입니다!!
+    </p>
+
+    <!-- 퍼스널 팔레트 메시지 -->
+    <p style="font-size: 24px; color: black; text-align: center; margin-top: 20px;">
+        당신의 Personal Palette를 확인하세요!
+    </p>
+
+
+<!-- 이미지와 텍스트를 수평 정렬 -->
+<div style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
+    <!-- 텍스트와 이미지를 세로로 배치 -->
+    <div style="text-align: left; margin-right: 20px; font-size: 24px; font-weight: bold; line-height: 2;">
+        <!-- 눈썹 -->
+        <div style="display: flex; align-items: center; margin-bottom: 40px;">
+            <img src="{{ url_for('static', filename='eyebrow_icon.png') }}" alt="Eyebrow" class="responsive-icon" style="margin-right: 10px;">
+            <span>눈썹</span>
+        </div>
+        <!-- 입술 -->
+        <div style="display: flex; align-items: center; margin-bottom: 40px;">
+            <img src="{{ url_for('static', filename='lip_icon.png') }}" alt="Lip" class="responsive-icon" style="margin-right: 10px;">
+            <span>입술</span>
+        </div>
+        <!-- 피부 -->
+        <div style="display: flex; align-items: center;">
+            <img src="{{ url_for('static', filename='skin_icon.png') }}" alt="Skin" class="responsive-icon" style="margin-right: 10px;">
+            <span>피부</span>
+        </div>
+    </div>
+
+    <!-- 퍼스널 컬러 이미지 -->
+    <div>
+        {% if personal_color == "Autumn Warm Tone" %}
+            <img src="{{ url_for('static', filename='autumn_warm.jpg') }}" alt="Autumn Warm Palette" style="max-width: 300px; border-radius: 10px;">
+        {% elif personal_color == "Spring Warm Tone" %}
+            <img src="{{ url_for('static', filename='spring_warm.jpg') }}" alt="Spring Warm Palette" style="max-width: 300px; border-radius: 10px;">
+        {% elif personal_color == "Summer Cool Tone" %}
+            <img src="{{ url_for('static', filename='summer_cool.jpg') }}" alt="Summer Cool Palette" style="max-width: 300px; border-radius: 10px;">
+        {% elif personal_color == "Winter Cool Tone" %}
+            <img src="{{ url_for('static', filename='winter_cool.jpg') }}" alt="Winter Cool Palette" style="max-width: 300px; border-radius: 10px;">
+        {% endif %}
+    </div>
+</div>
+
+<!-- 스타일 추가 -->
+<style>
+    /* 반응형 아이콘 스타일 */
+    .responsive-icon {
+        width: 70px;
+        height: 70px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    /* 마우스 오버 효과 */
+    .responsive-icon:hover {
+        transform: scale(1.2); /* 확대 */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
+    }
+
+    /* 모바일 반응형 */
+    @media (max-width: 768px) {
+        .responsive-icon {
+            width: 50px;
+            height: 50px;
+        }
+    }
+</style>
+
+
+
+    <!-- 버튼 -->
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/diagnose"><button>진단 페이지로 돌아가기</button></a>
+        <!-- 퍼스널 컬러 정보를 쿼리 파라미터로 넘김 -->
+        <a href="{{ url_for('recommendations', color=personal_color) }}"><button>추천 페이지로 이동</button></a>
+    </div>
+{% endblock %}

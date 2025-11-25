@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- jQuery라는 자바스크립트 라이브러리 추가
+    현재 코드에서 jQuery는 웹캠을 제어하고, YOLO 실행 후
+    결과 페이지로 리디렉션하는 기능을 처리하는 데 사용.-->
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+    <header>
+        <h1>AI 퍼스널 컬러 진단</h1>
+
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    <!-- Jinja 템플릿 문법에서 **block content**는 각 페이지별로 고유한 내용을 삽입하는 영역
+    **base.html**을 상속받는 다른 HTML 파일들이 이 부분을 채우는 방식으로,
+    진단 페이지나 결과 페이지 같은 파일들이 해당 영역에 각자의 콘텐츠를 추가구성. -->
+    </main>
+</body>
+</html>
