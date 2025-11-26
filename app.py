@@ -1,10 +1,10 @@
-import norm
 import pandas as pd
 from flask import Flask, render_template, Response, redirect, url_for, request, jsonify,send_from_directory# 웹앱 개발에 필요한 기능을 Flask 모듈에서 가져오는 코드
 import cv2        # OpenCV 라이브러리로 웹캠 영상을 처리
 import os         # 파일 경로 및 폴더 처리를 위한 모듈
 import shutil     # 파일 및 폴더 삭제, 복사를 위한 모듈
 import subprocess # 외부 프로그램을 실행하기 위한 모듈
+import sys        # 시스템 관련 모듈 (python executable 경로 등)
 import numpy as np
 from numpy.linalg import norm
 
@@ -12,6 +12,9 @@ from numpy import array
 
 app = Flask(__name__) # Flask 애플리케이션을 생성
 app.url_map.strict_slashes = False
+
+# 기본 디렉토리 설정 (현재 파일의 위치 기준)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # 초기화 코드 추가
 result_file_name = ''
@@ -86,7 +89,7 @@ def run_yolo():
     global result_file_name, personal_color_result
 
     # 결과 디렉토리 설정
-    result_directory = r'C:\Users\주윤호\Desktop\test'
+    result_directory = os.path.join(BASE_DIR, 'result')
     try:
         if os.path.exists(result_directory):
             shutil.rmtree(result_directory)
@@ -96,15 +99,15 @@ def run_yolo():
 
     try:
         # detect.py 실행
-        detect_script_path = r'detect.py'
-        python_executable = r'C:\venvs\myproject\Scripts\python.exe'  # 가상 환경의 Python 경로
+        detect_script_path = os.path.join(BASE_DIR, 'detect.py')
+        python_executable = sys.executable  # 현재 실행 중인 Python 인터프리터 사용
 
         if not os.path.exists(detect_script_path):
             print(f"Error: detect.py 파일이 {detect_script_path} 경로에 존재하지 않습니다.")
             return jsonify({'status': 'error', 'message': 'detect.py 파일이 경로에 존재하지 않습니다.'})
 
         result = subprocess.run(
-            [python_executable, detect_script_path],
+            [python_executable, detect_script_path, '--project', BASE_DIR, '--name', 'result', '--exist-ok'],
             capture_output=True, text=True, encoding='utf-8'
         )
 
@@ -134,7 +137,7 @@ def result():
 # 파일 삭제 기능 (진단 시작 버튼을 누르면 정보 초기화)
 @app.route('/delete', methods=['POST'])
 def delete_files():
-    folder_path = r'C:\Users\주윤호\Desktop\test'  # 삭제할 폴더 경로
+    folder_path = os.path.join(BASE_DIR, 'result')  # 삭제할 폴더 경로
     try:
         # 해당 폴더 내의 모든 파일 및 폴더 삭제
         for filename in os.listdir(folder_path):
@@ -152,7 +155,7 @@ def delete_files():
 @app.route('/result/<path:filename>')
 def send_result(filename):
     # 바탕화면에 있는 test/result 폴더 경로를 설정하여 파일을 반환
-    base_path = os.path.expanduser(r"C:\Users\주윤호\Desktop\test\result")
+    base_path = os.path.join(BASE_DIR, 'result')
     return send_from_directory(base_path, filename)   # 파일을 폴더에서 사용자에게 전송
 
 # 퍼스널 컬러 분석을 위한 HSV 립 팔레트 재정의
@@ -268,8 +271,9 @@ def classify_personal_color(hsv):
 
 # CSV 파일에서 데이터 읽기
 try:
+    csv_path = os.path.join(BASE_DIR, 'beauty_items', 'colors.csv')
     data = pd.read_csv(
-        r'C:\\projects\\myproject\\beauty_items\\colors.csv',
+        csv_path,
         engine='python',  # CSV 파일 파싱 엔진 (기본값 C, 대체 python)
         sep=',',  # 구분자 설정
         nrows=None,  # 모든 행 읽기

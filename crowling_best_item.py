@@ -14,8 +14,11 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from colorthief import ColorThief
 import colorsys
 
+# 기본 디렉토리 설정
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # 이미지 저장 폴더 설정 (전체 기본 경로)
-output_folder = r'C:\projects\myproject\beauty_items'
+output_folder = os.path.join(BASE_DIR, 'beauty_items')
 
 # 폴더 내부의 모든 파일과 폴더 삭제
 if os.path.exists(output_folder):
