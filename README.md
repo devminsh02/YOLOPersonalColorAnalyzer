@@ -17,14 +17,15 @@ https://drive.google.com/drive/folders/1k4H-39QyItacNX3GIBIU0mOp6ciYkAE7?usp=sha
 
 https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE12132276
 
-저는 해당 연구에서
 
-YOLO 학습,
+## 👥 역할 분담
 
-얼굴 랜드마크 기반 색상 추출,
+| 이름 | 담당 업무 |
+|-------|-----------|
+| **민선홍** | YOLO 학습, 얼굴 랜드마크 기반 색상 추출, 퍼스널 컬러 분석 모듈 개발 |
+| **최문성** | 웹 크롤링, 유사도 기반 퍼스널 컬러 진단, Flask 서버 구축 |
 
-퍼스널 컬러 분석 모듈 개발
-부분을 담당하였습니다.
+
 
 
 <h3>🎯 YOLO 앙상블 기반 퍼스널 컬러 분석</h3>
